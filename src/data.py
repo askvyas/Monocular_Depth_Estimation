@@ -76,6 +76,8 @@ class Data:
             
 
     def preprocessing(self):
+        
+
         pass
 
 
@@ -107,5 +109,5 @@ class Data:
 
 if __name__ == '__main__':
     data_handler = Data("/home/vyas/CVIP/project/Dataset")
-    # data_handler.load_image('dining_room_0001b_rgb_00003.jpg')
+#     data_handler.load_image('dining_room_0001b_rgb_00003.jpg')
     data_handler.visualize_dataset()
