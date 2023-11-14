@@ -2,7 +2,7 @@ import tensorflow as tf
 import os
 import numpy as np
 import data
-from Model_selfsupervised import SelfSupervisedModel
+from CNN_Model import CNN_Model
 
 data_loader = data.Data("/home/vyas/CVIP/project/Dataset")
 INPUT_IMAGE_DIR = data_loader.input_path
@@ -45,6 +45,8 @@ model = SelfSupervisedModel()
 model.compile(optimizer='adam', loss='mean_squared_error')
 
 model.fit(dataset, epochs=10)
+
+
 
 
 
