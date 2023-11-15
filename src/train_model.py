@@ -3,6 +3,7 @@ import os
 import numpy as np
 import data
 from CNN_Model import CNN_Model
+from mobile_net import Model_mobile
 
 data_loader = data.Data("/home/vyas/CVIP/project/Dataset")
 INPUT_IMAGE_DIR = data_loader.input_path
@@ -40,12 +41,15 @@ class Train():
 obj_train = Train()
 dataset = obj_train.create_dataset(INPUT_IMAGE_DIR, OUTPUT_IMAGE_DIR)
 
-model = SelfSupervisedModel()
+# model = CNN_Model()
 
-model.compile(optimizer='adam', loss='mean_squared_error')
+# model.compile(optimizer='adam', loss='mean_squared_error')
 
-model.fit(dataset, epochs=10)
+# model.fit(dataset, epochs=10)
+# 
 
+model = Model_mobile()
+model.forward(model)
 
 
 

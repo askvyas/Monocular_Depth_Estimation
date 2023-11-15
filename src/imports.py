@@ -18,3 +18,15 @@ import random
 import pickle
 import matplotlib.pyplot as plt
 import tensorflow as tf
+
+
+
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+
+import torch
+from torchvision import transforms
+from torch.utils.data import Dataset, DataLoader
+from PIL import Image

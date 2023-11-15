@@ -14,7 +14,7 @@ class CNN_Model(tf.keras.Model):
         self.decoder = tf.keras.Sequential([
             layers.Conv2DTranspose(128, (3, 3), strides=2, activation='relu', padding='same'),
             layers.Conv2DTranspose(64, (3, 3), strides=2, activation='relu', padding='same'),
-            layers.Conv2D(1, (3, 3), activation='sigmoid', padding='same')  # Assuming grayscale output
+            layers.Conv2D(1, (3, 3), activation='sigmoid', padding='same') 
         ])
     
     def call(self, x):
