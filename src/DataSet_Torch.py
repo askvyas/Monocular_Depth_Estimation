@@ -40,3 +40,8 @@ transform = transforms.Compose([
 
 dataset = SceneDataset(root_dir, transform=transform)
 dataloader = DataLoader(dataset, batch_size=4, shuffle=True)
+
+
+
+print(type(dataset))
+# Author Sai Karthik Vyas
