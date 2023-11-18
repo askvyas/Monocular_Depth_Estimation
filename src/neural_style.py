@@ -24,8 +24,8 @@ torch.set_default_device(device)
 imsize = 512 if torch.cuda.is_available() else 128  
 
 loader = transforms.Compose([
-    transforms.Resize(imsize), # Resize to the desired size
-    transforms.ToTensor()      # Transform it into a torch tensor
+    transforms.Resize(imsize),
+    transforms.ToTensor()      
 ])
 
 
@@ -160,7 +160,6 @@ def get_style_model_and_losses(cnn, normalization_mean, normalization_std,
             content_losses.append(content_loss)
 
         if name in style_layers:
-            # add style loss:
             target_feature = model(style_img).detach()
             style_loss = StyleLoss(target_feature)
             model.add_module("style_loss_{}".format(i), style_loss)
@@ -259,7 +258,6 @@ to_grayscale = transforms.Compose([
 
 output_gray = to_grayscale(output.to(device).squeeze(0))
 
-# Convert the grayscale image back to a tensor
 to_tensor = transforms.ToTensor()
 output_gray_tensor = to_tensor(output_gray)
 

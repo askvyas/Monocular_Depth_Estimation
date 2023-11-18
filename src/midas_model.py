@@ -1,11 +1,17 @@
+#Refernece : https://pytorch.org/hub/intelisl_midas_v2/ 
+# Midas Model Torch implementation
+
+
 import cv2
 import torch
 import urllib.request
 
 import matplotlib.pyplot as plt
 
-url, filename = ("https://github.com/pytorch/hub/raw/master/images/dog.jpg", "dog.jpg")
-urllib.request.urlretrieve(url, filename)
+# url, filename = ("https://github.com/pytorch/hub/raw/master/images/dog.jpg", "dog.jpg")
+# urllib.request.urlretrieve(url, filename)
+
+filename="/home/vyas/CVIP/project/sync/basement_0001a/rgb_00000.jpg"
 model_type = "DPT_Large"     # MiDaS v3 - Large     (highest accuracy, slowest inference speed)
 
 midas = torch.hub.load("intel-isl/MiDaS", model_type)
