@@ -8,7 +8,7 @@ import os
 
 
 class DatasetNeural(Dataset):
-    def __init__(self, root_dir, transform=None):
+    def __init__(self, root_dir, transform):
 
         self.root_dir = root_dir
         self.transform=transform
@@ -36,11 +36,13 @@ class DatasetNeural(Dataset):
     def __getitem__(self, idx):
         rgb_path, depth_path = self.paired_images[idx]
 
-        rgb_image = Image.open(rgb_path).convert('RGB')
+        # Load the RGB image and apply transformations
+        rgb_image = Image.open(rgb_path).convert('L')
         if self.transform:
             rgb_image = self.transform(rgb_image)
 
-        depth_image = Image.open(depth_path).convert('RGB')  # Convert to RGB if needed
+        # Load the depth image as is, without converting to RGB
+        depth_image = Image.open(depth_path)
         if self.transform:
             depth_image = self.transform(depth_image)
 
@@ -66,15 +68,16 @@ def show_images(dataset, num_pairs=3):
     for i in range(num_pairs):
         rgb_image, depth_image = dataset[i]  # Fetch the i-th pair of images
 
-        # Convert the tensors to numpy arrays for plotting
+        # Convert the RGB image tensor to numpy array for plotting
         rgb_image = rgb_image.numpy().transpose(1, 2, 0)
-        depth_image = depth_image.numpy().transpose(1, 2, 0)
-
         axs[i, 0].imshow(rgb_image)
         axs[i, 0].set_title(f'RGB Image {i}')
         axs[i, 0].axis('off')
 
-        axs[i, 1].imshow(depth_image)
+        # Handle depth image
+        depth_image = depth_image.squeeze(0).numpy()  # Assuming depth_image is a single-channel image
+        # Optionally adjust the range or data type here if necessary
+        axs[i, 1].imshow(depth_image, cmap='gray')  # Use a grayscale colormap
         axs[i, 1].set_title(f'Depth Image {i}')
         axs[i, 1].axis('off')
 
