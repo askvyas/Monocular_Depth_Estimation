@@ -54,20 +54,20 @@ model.to(device)
 optimizer=torch.optim.Adam(model.parameters(),lr=0.001)
 
 #might need to change the loss function 
-criterion=nn.MSELoss()
+criterion=nn.SmoothL1Loss()
 
-num_epochs = 10  
+num_epochs = 3
 
 dataset = DatasetNeural(root_dir, transform=transform)
 dataloader = DataLoader(dataset, batch_size=4, shuffle=False,num_workers=0)
-print(dataloader)
+# print(dataloader)
 
 for epoch in range(num_epochs):
     model.train()  
     running_loss = 0.0
 
     for i, (rgb_images, depth_images) in enumerate(dataloader):
-        print(type(rgb_images))
+        # print(type(rgb_images))
         rgb_images = rgb_images.to(device)
         depth_images = depth_images.to(device, dtype=torch.float)
 
@@ -94,7 +94,7 @@ print('Finished Training')
 
 
 
-#------------------------------------------------------------------------------- display
+#------------------------------------------------------------------------------- display------------------------------------------------------------------------
 
 from torchvision import transforms
 from PIL import Image
@@ -117,6 +117,9 @@ with torch.no_grad():
 
 predicted_depth = prediction.squeeze().cpu().numpy() 
 plt.imshow(predicted_depth, cmap='gray')
-plt.title("Predicted Depth Image")
+plt.title("Depth Image")
 plt.axis('off')
 plt.show()
+
+
+torch.save(model.state_dict(), "/home/vyas/CVIP/project")
