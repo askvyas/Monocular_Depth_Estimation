@@ -8,6 +8,8 @@ from PIL import Image
 from torchvision import transforms
 from PIL import Image
 from torch.utils.data import DataLoader
+torch.cuda.empty_cache()
+
 
 
 
@@ -22,7 +24,7 @@ transform = transforms.Compose([
 ])
 
 
-import torch.nn as nn
+# import torch.nn as nn
 
 # class CNN_Model(nn.Module):
 #     def __init__(self) -> None:
@@ -84,10 +86,13 @@ optimizer=torch.optim.Adam(model.parameters(),lr=0.0001)
 criterion=nn.SmoothL1Loss()
 
 num_epochs = 3
+epoch_losses = []
+
 
 dataset = DatasetNeural(root_dir, transform=transform)
-dataloader = DataLoader(dataset, batch_size=4, shuffle=False,num_workers=0)
+dataloader = DataLoader(dataset, batch_size=5, shuffle=False,num_workers=0)
 # print(dataloader)
+torch.cuda.empty_cache()
 
 for epoch in range(num_epochs):
     model.train()  
@@ -113,6 +118,8 @@ for epoch in range(num_epochs):
         optimizer.step()
 
         running_loss += loss.item()
+        epoch_losses.append(loss.item())
+
         if i % 100 == 99: 
             print(f'[{epoch + 1}, {i + 1}] loss: {running_loss / 100:.3f}')
             running_loss = 0.0
@@ -138,11 +145,17 @@ image = image.unsqueeze(0)
 
 image = image.to(device)
 
+
 model.eval()
 with torch.no_grad():
     prediction = model(image)
 
 predicted_depth = prediction.squeeze().cpu().numpy()
+
+#saving the predicted image
+predicted_depth_image = Image.fromarray((predicted_depth * 255).astype(np.uint8))
+predicted_depth_image.save("depth_image_pred_1.jpg")  
+
 #normalization added (trial)
 predicted_depth = (predicted_depth - predicted_depth.min()) / (predicted_depth.max() - predicted_depth.min())
 plt.imshow(predicted_depth, cmap='gray')
@@ -151,4 +164,14 @@ plt.axis('off')
 plt.show()
 
 
-torch.save(model.state_dict(), "/home/vyas/CVIP/project/model.pth")
+torch.save(model.state_dict(), "/home/vyas/CVIP/project/model_bn2_1.pth")
+
+
+plt.figure(figsize=(10, 5))
+plt.plot(epoch_losses, label='Training Loss')
+plt.xlabel('Epoch')
+plt.ylabel('Loss')
+plt.title('Training Loss Over Epochs')
+plt.legend()
+plt.savefig('training_loss_graph.jpg')  
+plt.show()
