@@ -46,3 +46,7 @@ output = prediction.cpu().numpy()
 
 plt.imshow(output)
 plt.show()
+
+
+image_path = 'results/midas_op.png'
+plt.imsave(image_path, output)

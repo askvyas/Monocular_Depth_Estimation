@@ -8,7 +8,6 @@ from PIL import Image
 from torchvision import transforms
 from PIL import Image
 from torch.utils.data import DataLoader
-torch.cuda.empty_cache()
 
 
 
@@ -45,7 +44,7 @@ transform = transforms.Compose([
 #         return x
 class CNN_Model(nn.Module):
     def __init__(self) -> None:
-        super(CNN_Model, self).__init__()
+        super(CNN_Model, self).__init__()   
         # Modification : Added batchnormalization
         self.conv1 = nn.Conv2d(3, 64, kernel_size=3, padding=1)
         self.bn1 = nn.BatchNorm2d(64)
@@ -77,7 +76,10 @@ class CNN_Model(nn.Module):
 
 
 model=CNN_Model()
+#loading previously saved model and training on it 
+model.load_state_dict(torch.load('/home/vyas/CVIP/project/model_bn2.pth'))
 model.to(device)
+
 #new learning 0.0001 trial
 optimizer=torch.optim.Adam(model.parameters(),lr=0.0001)
 
@@ -90,7 +92,7 @@ epoch_losses = []
 
 
 dataset = DatasetNeural(root_dir, transform=transform)
-dataloader = DataLoader(dataset, batch_size=5, shuffle=False,num_workers=0)
+dataloader = DataLoader(dataset, batch_size=3, shuffle=False,num_workers=0)
 # print(dataloader)
 torch.cuda.empty_cache()
 
@@ -123,6 +125,7 @@ for epoch in range(num_epochs):
         if i % 100 == 99: 
             print(f'[{epoch + 1}, {i + 1}] loss: {running_loss / 100:.3f}')
             running_loss = 0.0
+torch.cuda.empty_cache()
 
 print('Finished Training')
 
@@ -147,6 +150,8 @@ image = image.to(device)
 
 
 model.eval()
+torch.save(model.state_dict(), "/home/vyas/CVIP/project/model_trainedonpth1.pth")
+
 with torch.no_grad():
     prediction = model(image)
 
@@ -154,7 +159,7 @@ predicted_depth = prediction.squeeze().cpu().numpy()
 
 #saving the predicted image
 predicted_depth_image = Image.fromarray((predicted_depth * 255).astype(np.uint8))
-predicted_depth_image.save("depth_image_pred_1.jpg")  
+predicted_depth_image.save("results/depth_image_pred_1.jpg")  
 
 #normalization added (trial)
 predicted_depth = (predicted_depth - predicted_depth.min()) / (predicted_depth.max() - predicted_depth.min())
@@ -164,7 +169,6 @@ plt.axis('off')
 plt.show()
 
 
-torch.save(model.state_dict(), "/home/vyas/CVIP/project/model_bn2_1.pth")
 
 
 plt.figure(figsize=(10, 5))
@@ -173,5 +177,5 @@ plt.xlabel('Epoch')
 plt.ylabel('Loss')
 plt.title('Training Loss Over Epochs')
 plt.legend()
-plt.savefig('training_loss_graph.jpg')  
+plt.savefig('results/training_loss_graph.jpg')  
 plt.show()

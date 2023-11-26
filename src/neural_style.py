@@ -15,6 +15,7 @@ from Dataset_Neural import DatasetNeural
 import copy
 
 from torchvision.transforms import Grayscale
+from torchvision.transforms.functional import to_tensor, to_pil_image
 
 
 
@@ -39,6 +40,18 @@ print(f"Content image size: {content_img.size()}")
 print(f"Style image size: {style_img.size()}")
 content_img = content_img.to(device).unsqueeze(0)
 style_img = style_img.to(device).unsqueeze(0)
+
+def convert_to_rgb(image):
+    # Remove the batch dimension (BxCxHxW to CxHxW)
+    image = image.squeeze(0)
+    image_pil = to_pil_image(image)
+    image_rgb = image_pil.convert("RGB")
+    # Add the batch dimension back (CxHxW to BxCxHxW)
+    return to_tensor(image_rgb).unsqueeze(0)
+
+
+if style_img.size(0) == 1:
+    style_img = convert_to_rgb(style_img)
 
 
 assert style_img.size() == content_img.size(), \
@@ -261,7 +274,17 @@ output_gray = to_grayscale(output.to(device).squeeze(0))
 to_tensor = transforms.ToTensor()
 output_gray_tensor = to_tensor(output_gray)
 
+
+
+image_path = 'results/neuralstyle_op.png'
+plt.imsave(image_path, output)
+
 plt.figure()
 imshow(output_gray_tensor, title='Output Image')
 plt.ioff()
 plt.show()
+
+
+
+image_path = 'results/midas_op.png'
+plt.imsave(image_path, output)
