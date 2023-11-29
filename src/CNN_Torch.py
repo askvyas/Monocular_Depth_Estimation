@@ -81,7 +81,8 @@ model.load_state_dict(torch.load('/home/vyas/CVIP/project/model_bn2.pth'))
 model.to(device)
 
 #new learning 0.0001 trial
-optimizer=torch.optim.Adam(model.parameters(),lr=0.0001)
+# new learning rate to make the training fast : 0.001
+optimizer=torch.optim.Adam(model.parameters(),lr=0.001)
 
 #might need to change the loss function 
 #Tried MSE, L1 smooth loss
